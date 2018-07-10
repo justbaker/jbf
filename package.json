@@ -1,0 +1,26 @@
+{
+  "name": "jbf",
+  "version": "0.0.1",
+  "description": "brainfuck interpreter in es6",
+  "main": "repl.js",
+  "scripts": {
+    "start": "node repl.js",
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justbaker/jbf.git"
+  },
+  "keywords": [
+    "brainfuck",
+    "js",
+    "interpreter",
+    "parser"
+  ],
+  "author": "Justin A. Baker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justbaker/jbf/issues"
+  },
+  "homepage": "https://github.com/justbaker/jbf#readme"
+}
