@@ -1,29 +1,21 @@
 # jbf
 
-| ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |                           
-| ------------------------------ |
-| a brainfuck interpreter in js  |
-|       Justin A. Baker          |
-| ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |
+A [brainfuck](https://en.wikipedia.org/wiki/Brainfuck) interpreter in JS/Es6
 
-## usage
-
-Brainfuck hello world program
+## Usage
+Brainfuck hello world program:
 
 ```
 ++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
 ```
 
-Running interpreter and hello world program
+Running interpreter and hello world program:
 
 ```
 npm start
 
+Justin's Brainfuck Interpreter v.0.1.0
+======================================
 brainfuck $ ++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
 Hello World!
-brainfuck $
 ```
-
-#### Background
-
-This my first interpreter. Advice is always warmly welcomed.

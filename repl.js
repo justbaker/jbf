@@ -1,5 +1,3 @@
-// https://en.wikipedia.org/wiki/Brainfuck
-//
 const data = [];
 let ptr = 0,
   openBrackets = 0,
@@ -21,6 +19,10 @@ const debugLog = (funs) => console.dir({
     parsedTokens
   }
 });
+
+console.log("Justin's Brainfuck Interpreter v.0.1.0")
+console.log("======================================")
+
 prompt();
 
 // evaluate char
