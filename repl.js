@@ -3,91 +3,108 @@
 const data = [];
 let ptr = 0,
   openBrackets = 0,
-  output = "";
+  output = "",
+  parsedTokens,
+  tokens;
 
+const debug = process.argv[2] == "-debug";
+const callAll = (funs = []) => funs.forEach(Function.prototype.call, Function.prototype.call);
 const print = (str) => process.stdout.write(str.toString());
-const prompt = () => print("brainfuck $ ")
-const log = (mode) => console.dir({
-  BRAINFUCK_LOG: {
-    mode,
+const prompt = () => print("brainfuck >")
+const debugLog = (funs) => console.dir({
+  log: {
     ptr,
     data,
-    output
+    output,
+    openBrackets,
+    parsedTokens
   }
 });
-
-console.log("Justin's Brainfuck interpreter ~-~ POC");
-[1, 2, 3].forEach(_ => print("=~==~=*=*=~==~=~="));
-console.log("")
-log("boot");
-[1, 2, 3].forEach(_ => print("=~==~=*=*=~==~=~="));
-console.log("")
 prompt();
 
-const evalToken = (token) => {
-  switch (token.toString()) {
-    case '>':
-      ptr++;
-    case '<':
-      ptr--;
-      if (ptr < 0) ptr = 0;
-    case '+':
-      data[ptr] = data[ptr] || 0;
-      data[ptr]++;
-    case '-':
-      data[ptr] = data[ptr] || 0;
-      data[ptr]--;
-    case '.': // output
-      //log("debug")
-      const val = String.fromCharCode(data[ptr]);
-      output += val;
-    case ',':
-      // TODO GET input
-    default: // ignore all else
-      return;
+// evaluate char
+const parseToken = (token) => {
+  return function evalToken() {
+    switch (token.toString()) {
+      case '>':
+        ptr++;
+        return ptr;
+      case '<':
+        ptr = ptr < 0 ? 0 : ptr - 1;
+        return ptr;
+      case '+':
+        data[ptr] = data[ptr] || 0;
+        return data[ptr]++;
+      case '-':
+        data[ptr] = data[ptr] || 0;
+        return data[ptr]--;
+      case '.': // output
+        //log("debug")
+        const val = String.fromCharCode(data[ptr]);
+        return output += val;
+      case ',':
+        // TODO GET input
+      default: // ignore all else
+        return;
+    }
   }
 }
 
-const bracket = function (tokens) {
+// evaluate loop
+const parseLoop = () => {
+  openBrackets++;
   const funs = [];
-  let nextChar = tokens.shift();
-  while (tokens[0] != "]") {
-    if (nextChar == undefined) {
-      return;
-    } else if (nextChar == '[') {
-      funs.push(bracket.bind(this, tokens));
-    } else {
-      funs.push(evalToken.bind(this, nextChar));
-    }
 
+  while (tokens[0] != "]") {
+    const nextChar = tokens.shift();
+    const nextFin = nextChar == '[' ? parseLoop(tokens) : parseToken(nextChar);
+    funs.push(nextFin);
   }
-  while (data[ptr] > 0) funs.forEach(f => f())
+
+  openBrackets--;
+  tokens.shift(); // ignore ]
+
+  return () => {
+    while (data[ptr] > 0) callAll(funs);
+  }
 };
 
-const EVAL = function (tokens) {
+// evaluate parsed input
+const evaluate = function (funs) {
+  if (openBrackets == 0) {
+    callAll(funs)
+    print(output);
+    if (debug) debugLog()
+  } else {
+    console.log("...inside loop");
+  }
+};
+
+
+// parse input
+const parse = function () {
   const funs = [];
   while (tokens.length > 0) {
-    let nextChar = tokens.shift();
+    const nextChar = tokens.shift();
     if (nextChar == '[') {
-      openBrackets++;
-      funs.push(bracket.bind(this, tokens));
+      funs.push(parseLoop(tokens));
     } else if (nextChar == ']') {
-      openBrackets--;
-      nextChar = tokens.shift();
+      tokens.shift(); // ignore ]
     } else {
-      funs.push(evalToken.bind(this, nextChar));
+      funs.push(parseToken(nextChar));
     }
   }
 
-  funs.forEach(f => f())
-
-  print(output)
+  return evaluate(funs)
 };
 
+// handle imput
 const repl = (data) => {
-  EVAL(data.toString()
+  tokens = data.toString()
     .trim()
-    .split(""));
+    .split("");
+  parsedTokens = tokens;
+  parse();
   prompt();
 }
 
