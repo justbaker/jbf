@@ -14,11 +14,14 @@ Brainfuck hello world program
 ++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
 ```
 
-Running interpreter
+Running interpreter and hello world program
 
 ```
 npm start
 
+brainfuck $ ++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
+Hello World!
+brainfuck $
 ```
 
 #### Background

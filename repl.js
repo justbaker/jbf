@@ -8,9 +8,10 @@ let ptr = 0,
   tokens;
 
 const debug = process.argv[2] == "-debug";
+
 const callAll = (funs = []) => funs.forEach(Function.prototype.call, Function.prototype.call);
 const print = (str) => process.stdout.write(str.toString());
-const prompt = () => print("brainfuck >")
+const prompt = () => print("brainfuck $")
 const debugLog = (funs) => console.dir({
   log: {
     ptr,
@@ -38,8 +39,7 @@ const parseToken = (token) => {
       case '-':
         data[ptr] = data[ptr] || 0;
         return data[ptr]--;
-      case '.': // output
-        //log("debug")
+      case '.':
         const val = String.fromCharCode(data[ptr]);
         return output += val;
       case ',':
@@ -80,7 +80,6 @@ const evaluate = function (funs) {
   }
 };
 
-
 // parse input
 const parse = function () {
   const funs = [];
@@ -98,7 +97,7 @@ const parse = function () {
   return evaluate(funs)
 };
 
-// handle imput
+// handle input
 const repl = (data) => {
   tokens = data.toString()
     .trim()
@@ -111,5 +110,5 @@ const repl = (data) => {
 const stdin = process.openStdin();
 stdin.setRawMode(false)
 stdin.resume();
-stdin.setEncoding('utf8'); // i don't want binary, do you?
+stdin.setEncoding('utf8');
 stdin.addListener("data", repl);
