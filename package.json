@@ -3,8 +3,11 @@
   "version": "0.0.1",
   "description": "brainfuck interpreter in es6",
   "main": "repl.js",
+  "bin": {
+    "jbf": "bin/jbf.js"
+  },
   "scripts": {
-    "start": "node repl.js",
+    "start": "bin/jbf.js",
     "test": "test.js"
   },
   "repository": {
