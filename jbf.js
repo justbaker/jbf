@@ -2,18 +2,17 @@ const data = [];
 const fs = require('fs');
 
 let ptr = 0,
-  openBrackets = 0,
   output = "",
   tokens,
-  input = [],
-  evaluated = false;
+  input = [];
 
 const debug = process.argv.includes("-debug");
 
 const source = fs.readFileSync(process.argv[2], 'utf8');
 const callAll = (funs = []) => funs.forEach(Function.prototype.call, Function.prototype.call);
 const print = (str) => process.stdout.write(str.toString());
-const debugLog = (funs) => console.dir({
+
+const debugLog = () => console.info({
   log: {
     ptr,
     data,
@@ -53,16 +52,13 @@ const parseToken = (token) => {
 
 // evaluate loop
 const parseLoop = () => {
-  openBrackets++;
   const funs = [];
 
   while (tokens[0] != "]") {
     const nextChar = tokens.shift();
-    const nextFin = nextChar == '[' ? parseLoop(tokens) : parseToken(nextChar);
-    funs.push(nextFin);
+    funs.push(nextChar == '[' ? parseLoop(tokens) : parseToken(nextChar));
   }
 
-  openBrackets--;
   tokens.shift(); // ignore ]
 
   return () => {
@@ -102,20 +98,18 @@ const evaluateFile = () => {
   parse();
 }
 
-function readStdin() {
-  var encoding = 'utf-8';
+const readStdin = () => {
   let stdinput = '';
+  process.stdin.setEncoding('utf8');
 
-  process.stdin.setEncoding(encoding);
-
-  process.stdin.on('readable', function () {
-    var chunk;
+  process.stdin.on('readable', () => {
+    let chunk;
     while (chunk = process.stdin.read()) {
       stdinput += chunk;
     }
   });
 
-  process.stdin.on('end', function () {
+  process.stdin.on('end', () => {
     // There will be a trailing \n from the user hitting enter. Get rid of it.
     input = stdinput.replace(/\n$/, '')
       .split("");
@@ -124,9 +118,8 @@ function readStdin() {
 
 }
 
-function main() {
-  if (!process.stdin.isTTY) readStdin();
-  if (process.stdin.isTTY) evaluateFile();
+const main = () => {
+  process.stdin.isTTY ? evaluateFile() : readStdin();
 }
 
 module.exports = main;
