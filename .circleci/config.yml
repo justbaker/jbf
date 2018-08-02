@@ -1,0 +1,30 @@
+version: 2
+defaults: &defaults
+  working_directory: ~/jbf
+  docker:
+    - image: circleci/node:8.9.1
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-
+      - run: npm install
+      - run:
+          name: Run tests
+          command: npm test
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v1-dependencies-
+      - persist_to_workspace:
+          root: ~/jbf
+          paths: .
+workflows:
+  version: 2
+  release:
+    jobs:
+      - test
