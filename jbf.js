@@ -1,29 +1,25 @@
 const data = [];
+const fs = require('fs');
+
 let ptr = 0,
   openBrackets = 0,
   output = "",
-  parsedTokens,
-  tokens;
+  tokens,
+  input = [],
+  evaluated = false;
 
-const debug = process.argv[2] == "-debug";
+const debug = process.argv.includes("-debug");
 
+const source = fs.readFileSync(process.argv[2], 'utf8');
 const callAll = (funs = []) => funs.forEach(Function.prototype.call, Function.prototype.call);
 const print = (str) => process.stdout.write(str.toString());
-const prompt = () => print("brainfuck $")
 const debugLog = (funs) => console.dir({
   log: {
     ptr,
     data,
-    output,
-    openBrackets,
-    parsedTokens
+    output
   }
 });
-
-console.log("Justin's Brainfuck Interpreter v.0.1.0")
-console.log("======================================")
-
-prompt();
 
 // evaluate char
 const parseToken = (token) => {
@@ -45,7 +41,10 @@ const parseToken = (token) => {
         const val = String.fromCharCode(data[ptr]);
         return output += val;
       case ',':
-        // TODO GET input
+        var c = input.shift();
+        if (typeof c == "string") {
+          data[ptr] = c.charCodeAt(0);
+        }
       default: // ignore all else
         return;
     }
@@ -73,13 +72,9 @@ const parseLoop = () => {
 
 // evaluate parsed input
 const evaluate = function (funs) {
-  if (openBrackets == 0) {
-    callAll(funs)
-    print(output);
-    if (debug) debugLog()
-  } else {
-    console.log("...inside loop");
-  }
+  callAll(funs)
+  print(output);
+  if (debug) debugLog()
 };
 
 // parse input
@@ -100,17 +95,38 @@ const parse = function () {
 };
 
 // handle input
-const repl = (data) => {
-  tokens = data.toString()
+const evaluateFile = () => {
+  tokens = source.toString()
     .trim()
     .split("");
-  parsedTokens = tokens;
   parse();
-  prompt();
 }
 
-const stdin = process.openStdin();
-stdin.setRawMode(false)
-stdin.resume();
-stdin.setEncoding('utf8');
-stdin.addListener("data", repl);
+function readStdin() {
+  var encoding = 'utf-8';
+  let stdinput = '';
+
+  process.stdin.setEncoding(encoding);
+
+  process.stdin.on('readable', function () {
+    var chunk;
+    while (chunk = process.stdin.read()) {
+      stdinput += chunk;
+    }
+  });
+
+  process.stdin.on('end', function () {
+    // There will be a trailing \n from the user hitting enter. Get rid of it.
+    input = stdinput.replace(/\n$/, '')
+      .split("");
+    evaluateFile();
+  });
+
+}
+
+function main() {
+  if (!process.stdin.isTTY) readStdin();
+  if (process.stdin.isTTY) evaluateFile();
+}
+
+module.exports = main;
