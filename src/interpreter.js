@@ -17,7 +17,7 @@ const debugLog = () => console.info({
 });
 
 // evaluate char
-const parseToken = (token) => {
+const evalToken = (token) => {
   return function evalToken() {
     switch (token.toString()) {
       case '>':
@@ -33,8 +33,7 @@ const parseToken = (token) => {
         data[ptr] = data[ptr] || 0;
         return data[ptr]--;
       case '.':
-        const val = String.fromCharCode(data[ptr]);
-        return output += val;
+        return output += String.fromCharCode(data[ptr]);
       case ',':
         let c = input.shift();
         if (typeof c == "string") data[ptr] = c.charCodeAt(0);
@@ -46,12 +45,12 @@ const parseToken = (token) => {
 }
 
 // evaluate loop
-const parseLoop = () => {
+const evalLoop = () => {
   const funs = [];
 
   while (tokens[0] != "]") {
     const nextChar = tokens.shift();
-    funs.push(nextChar == '[' ? parseLoop(tokens) : parseToken(nextChar));
+    funs.push(nextChar == '[' ? evalLoop(tokens) : evalToken(nextChar));
   }
 
   tokens.shift(); // ignore ]
@@ -62,7 +61,7 @@ const parseLoop = () => {
 };
 
 // evaluate parsed input
-const evaluate = function (funs) {
+const evalProgram = function (funs) {
   callAll(funs)
   print(output);
   if (debug) debugLog()
@@ -74,15 +73,15 @@ const parse = function (tokens, debug) {
   while (tokens.length > 0) {
     const nextChar = tokens.shift();
     if (nextChar == '[') {
-      funs.push(parseLoop(tokens));
+      funs.push(evalLoop(tokens));
     } else if (nextChar == ']') {
       tokens.shift(); // ignore ]
     } else {
-      funs.push(parseToken(nextChar));
+      funs.push(evalToken(nextChar));
     }
   }
 
-  return evaluate(funs, debug)
+  return evalProgram(funs, debug)
 };
 
 // handle input
