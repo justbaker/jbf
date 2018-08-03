@@ -1,10 +1,10 @@
 {
   "name": "jbf",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "brainfuck interpreter in es6",
   "main": "repl.js",
   "bin": {
-    "jbf": "bin/jbf.js"
+    "jbf": "bin/jbf"
   },
   "scripts": {
     "start": "bin/jbf.js",

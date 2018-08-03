@@ -10,6 +10,16 @@ Running interpreter and hello world program:
 $ ./bin/jbf test/hello-world.bf
 Hello World!
 ```
+
+## Installing
+
+```
+$ npm install -g jbf
+
+$ jbf filename.bf
+
+```
+
 ## Debugging
 
 `./bin/jbf test/file.bf -debug`
