@@ -17,14 +17,14 @@ const readStdin = (file) => {
     // There will be a trailing \n from the user hitting enter. Get rid of it.
     const input = stdinput.replace(/\n$/, '')
       .split("");
-    interpreter(file, input)
+    interpreter(file, input, debug)
   });
 
 }
 
 const main = () => {
   const file = fs.readFileSync(process.argv[2], 'utf8');
-  process.stdin.isTTY ? interpreter(file) : readStdin(file);
+  process.stdin.isTTY ? interpreter(file, "", debug) : readStdin(file);
 }
 
 module.exports = main;

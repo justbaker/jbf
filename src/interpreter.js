@@ -3,17 +3,15 @@ let ptr = 0,
   output = "",
   input = [],
   tokens = [],
-  debug = false;
+  limit = 100000;
 
 const callAll = (funs = []) => funs.forEach(Function.prototype.call, Function.prototype.call);
 const print = (str) => process.stdout.write(str.toString());
 
 const debugLog = () => console.info({
-  log: {
-    ptr,
-    data,
-    output
-  }
+  ptr,
+  data,
+  output
 });
 
 // evaluate char
@@ -54,15 +52,19 @@ const evalLoop = () => {
   }
 
   tokens.shift(); // ignore ]
+  let i = 0;
 
   return () => {
-    while (data[ptr] > 0) callAll(funs);
+    while (data[ptr] > 0 && i < limit) {
+      i++;
+      callAll(funs);
+    }
   }
 };
 
 // evaluate parsed input
-const evalProgram = function (funs) {
-  callAll(funs)
+const evalProgram = function (funs, debug) {
+  callAll(funs);
   print(output);
   if (debug) debugLog()
 };
@@ -85,11 +87,10 @@ const parse = function (tokens, debug) {
 };
 
 // handle input
-module.exports = (code, stdin, isDebug) => {
-  debug = isDebug;
+module.exports = (code, stdin, isDebug = false) => {
   input = stdin;
   tokens = [...String(code)
     .trim()
   ];
-  parse(tokens);
+  parse(tokens, isDebug);
 };

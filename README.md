@@ -38,10 +38,13 @@ $ jbf filename.bf
 | [ | if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command. |
 | ] | if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command. |
 
-## Hello world
 
-Brainfuck hello world program:
-
-```
-++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
-```
+## Tests
+* cat.bf        
+* fibonacci.bf
+* hello-world.bf
+* quine.bf
+* read-input.bf
+* squares.bf
+* subtract.bf
+* wc.bf
