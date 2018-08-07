@@ -1,7 +1,6 @@
 const data = [];
 let ptr = 0,
   output = "",
-  input = [],
   tokens = [],
   limit = 100000;
 
@@ -88,7 +87,7 @@ const parse = function (tokens, debug) {
 
 // handle input
 module.exports = (code, stdin, isDebug = false) => {
-  input = stdin;
+  input = stdin || [];
   tokens = [...String(code)
     .trim()
   ];
